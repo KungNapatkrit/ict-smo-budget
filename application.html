@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ICT Student Club Application Form</title>
+  <style>
+    @font-face { font-family: "THSarabunPSK"; src: url("assets/THSarabunPSK.ttf") format("truetype"); font-weight: 400; font-display: swap; }
+    @font-face { font-family: "THSarabunPSK"; src: url("assets/THSarabunPSK-Bold.ttf") format("truetype"); font-weight: 700 900; font-display: swap; }
+    :root { --ink: #17212b; --muted: #667085; --line: #cfd5dc; --brand: #087a7c; --brand-dark: #075b5d; --paper: #fff; --canvas: #eef2f4; }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); background: var(--canvas); font-family: Arial, Helvetica, sans-serif; }
+    .app-header { position: sticky; top: 0; z-index: 10; display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 14px 24px; color: white; background: var(--brand-dark); box-shadow: 0 2px 10px rgba(0,0,0,.15); }
+    .app-header h1 { margin: 0; font-size: 19px; }
+    .app-header p { margin: 2px 0 0; font-size: 13px; opacity: .85; }
+    .actions, .form-footer { display: flex; flex-wrap: wrap; gap: 8px; }
+    button, .file-button { border: 1px solid transparent; border-radius: 7px; padding: 9px 13px; font: inherit; font-weight: 700; cursor: pointer; }
+    button.primary { color: white; background: var(--brand); }
+    button.secondary, .file-button { color: var(--ink); background: white; border-color: var(--line); }
+    button.danger { color: #a51d2d; background: #fff5f6; border-color: #f2b8c0; }
+    button:hover, .file-button:hover { filter: brightness(.96); }
+    .file-button input { display: none; }
+    .workspace { display: grid; grid-template-columns: minmax(330px,470px) minmax(650px,1fr); gap: 20px; max-width: 1500px; margin: 0 auto; padding: 20px; align-items: start; }
+    .panel { background: white; border: 1px solid #dfe4e8; border-radius: 10px; box-shadow: 0 5px 20px rgba(40,55,65,.08); overflow: hidden; }
+    .panel-title { margin: 0; padding: 16px 18px; font-size: 17px; border-bottom: 1px solid #e7ebee; }
+    .form-body { padding: 18px; }
+    fieldset { margin: 0 0 20px; padding: 0; border: 0; }
+    legend { width: 100%; margin-bottom: 10px; font-size: 15px; font-weight: 800; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    label { display: block; margin-bottom: 9px; color: #344054; font-size: 13px; font-weight: 700; }
+    input, textarea, select { width: 100%; margin-top: 5px; border: 1px solid #bfc7cf; border-radius: 6px; padding: 9px 10px; color: var(--ink); background: white; font-family: "THSarabunPSK", sans-serif; font-size: 14pt; line-height: 1.1; }
+    textarea { min-height: 66px; resize: vertical; }
+    input:focus, textarea:focus, select:focus { outline: 3px solid #c5ecec; border-color: var(--brand); }
+    .radio-group, .check-field { display: flex; align-items: center; gap: 8px; margin: 7px 0; font-weight: 700; }
+    .radio-group input, .check-field input { width: auto; margin: 0; }
+    .person-card, .objective-card { margin-bottom: 10px; padding: 11px; border: 1px solid #dde2e7; border-radius: 8px; background: #fbfcfd; }
+    .person-card h3, .objective-card h3 { margin: 0 0 8px; font-size: 14px; }
+    .objective-card .remove-objective { margin-top: 6px; padding: 6px 9px; font-size: 12px; }
+    .screen-note { margin: 12px 0 0; color: var(--muted); font-size: 12px; }
+    [hidden] { display: none !important; }
+
+    .preview-wrap { overflow: auto; padding: 20px; background: #dfe5e8; }
+    .paper { width: 210mm; min-height: 297mm; margin: 0 auto 20px; padding: 14mm 13mm 12mm; color: #000; background: var(--paper); box-shadow: 0 3px 18px rgba(0,0,0,.18); font-family: "THSarabunPSK", sans-serif; font-size: 14pt; line-height: 1.15; }
+    .document-header { width: 100%; text-align: center; }
+    .document-logo { display: block; width: 7.82cm; height: 2.01cm; margin: 0 auto 5mm; object-fit: contain; }
+    .document-title { margin: 0 0 5mm; text-align: center; font-family: "THSarabunPSK", sans-serif; font-size: 18pt; line-height: 1.1; }
+    .application-choice { display: grid; grid-template-columns: 1fr 1fr; gap: 8mm; margin: 0 10mm 5mm; font-weight: 700; }
+    .choice-mark { display: inline-block; width: 5mm; height: 5mm; margin-right: 2mm; border: .35mm solid #222; text-align: center; line-height: 4mm; }
+    .choice-mark.checked::after { content: "✓"; }
+    .metadata { margin-bottom: 3mm; }
+    .metadata p { display: grid; grid-template-columns: 38mm 1fr; column-gap: 2mm; margin: 1.5mm 0; }
+    .line-value { display: block; min-width: 0; }
+    .section-heading { margin: 5mm 0 2mm; font-size: 14pt; }
+    .document-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+    .document-table th, .document-table td { border: .35mm solid #333; padding: 2.3mm 2.5mm; vertical-align: top; overflow-wrap: anywhere; }
+    .document-table th { text-align: center; font-weight: 800; }
+    .committee-table td:first-child { font-weight: 800; }
+    .committee-table .role-col { width: 21%; }
+    .committee-table .id-col { width: 20%; }
+    .committee-table .name-col { width: 29.5%; }
+    .objectives { margin: 0 0 5mm 8mm; padding-left: 7mm; }
+    .objectives li { min-height: 7mm; padding-left: 2mm; white-space: pre-wrap; }
+    .renewal-section { margin-bottom: 5mm; }
+    .document-check { margin-right: 2mm; font-family: Arial, sans-serif; }
+    .signatures { display: grid; grid-template-columns: 1fr 1fr; gap: 7mm 18mm; margin-top: 6mm; }
+    .signature-block, .signature { break-inside: avoid; page-break-inside: avoid; }
+    .signature { min-height: 35mm; text-align: center; }
+    .signature-line { margin-top: 10mm; }
+    .signature p { margin: 1mm 0; }
+    .signature-name { font-weight: 700; }
+    .certificate-title { margin: 0 0 5mm; font-size: 18pt; line-height: 1.15; }
+    .certificate-intro { margin: 0 0 5mm; text-align: justify; }
+    .qualification-list { margin: 0; padding: 0; list-style: none; }
+    .qualification-list li { display: grid; grid-template-columns: 7mm 1fr; gap: 1mm; margin: 3mm 0; }
+    .certificate-signatures { width: 48%; margin: 18mm 0 0 auto; }
+    .certificate-signatures .signature { min-height: 31mm; }
+
+    @media (max-width:1120px) { .workspace { grid-template-columns: 1fr; } .panel.form-panel { max-width:760px; margin:0 auto; } }
+    @media print {
+      @page { size: A4 portrait; margin: 12mm; }
+      html, body { width:100%; min-width:0; margin:0; background:white; }
+      .no-print, .form-panel { display:none !important; }
+      .workspace { display:block; width:100%; max-width:100%; min-width:0; margin:0; padding:0; }
+      .panel, .preview-wrap { width:100%; max-width:100%; min-width:0; margin:0; padding:0; border:0; box-shadow:none; overflow:visible; background:white; }
+      .paper { width:100%; max-width:100%; min-width:0; min-height:0; margin:0; padding:0; box-shadow:none; }
+      .certificate-page { break-before:page; page-break-before:always; }
+      .document-table { width:calc(100% - 2mm) !important; max-width:calc(100% - 2mm); min-width:0; margin-left:1mm; margin-right:1mm; }
+      .document-table th, .document-table td { min-width:0; overflow-wrap:anywhere; word-break:break-word; }
+      thead { display:table-header-group; }
+      tr, .signature, .signature-block { break-inside:avoid; page-break-inside:avoid; }
+    }
+  </style>
+</head>
+<body>
+  <header class="app-header no-print">
+    <div><h1>ICT Student Club Application Form</h1><p>Enter data here; the official layout stays protected.</p></div>
+    <div class="actions">
+      <button class="secondary" type="button" onclick="location.href='index.html'">Choose form</button>
+      <button class="secondary" type="button" id="sampleButton">Load sample</button>
+      <button class="secondary" type="button" id="downloadButton">Save data</button>
+      <label class="file-button">Open data<input id="uploadInput" type="file" accept="application/json,.json"></label>
+      <button class="primary" type="button" id="printButton">Print / Save PDF</button>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <section class="panel form-panel no-print">
+      <h2 class="panel-title">Application information</h2>
+      <form id="applicationForm" class="form-body">
+        <fieldset>
+          <legend>Application details</legend>
+          <label>Academic year<input name="academicYear" inputmode="numeric" placeholder="2026"></label>
+          <label class="radio-group"><input type="radio" name="applicationType" value="new" checked> Establish a new club</label>
+          <label class="radio-group"><input type="radio" name="applicationType" value="renew"> Renew an existing club</label>
+          <label>Student club name<input name="clubName" placeholder="Club name"></label>
+          <label>Advisor names<input name="advisors" placeholder="Name-Surname"></label>
+        </fieldset>
+
+        <fieldset><legend>Committee</legend><div id="committeeFields"></div></fieldset>
+
+        <fieldset>
+          <legend>Objectives</legend>
+          <div id="objectiveFields"></div>
+          <button type="button" class="secondary" id="addObjectiveButton">Add objective</button>
+        </fieldset>
+
+        <fieldset id="renewalField" hidden>
+          <legend>Past yearly activities</legend>
+          <label class="check-field"><input type="checkbox" name="annualReportSubmitted"> Annual Report submitted</label>
+        </fieldset>
+
+        <fieldset>
+          <legend>Approval names</legend>
+          <div class="grid-2">
+            <label>Club advisor<input name="clubAdvisorName" placeholder="Name-Surname"></label>
+            <label>ICT Student Association president<input name="associationPresidentName" value="Napatkrit Asavarojpanich"></label>
+            <label>Board chairperson<input name="chairpersonName" value="Asst. Prof. Dr. Thanapon Noraset"></label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Qualification confirmation</legend>
+          <label class="check-field"><input type="checkbox" name="qualificationRegistered"> Registered ICT students in the academic year</label>
+          <label class="check-field"><input type="checkbox" name="qualificationGpa"> GPA is not less than 2.00</label>
+          <label class="check-field"><input type="checkbox" name="qualificationProbation"> Not currently on probation</label>
+          <label class="check-field"><input type="checkbox" name="qualificationPunishment"> Not being punished under university rules</label>
+          <label class="check-field"><input type="checkbox" name="qualificationMembership"> Not members of the listed student councils or associations</label>
+        </fieldset>
+
+        <div class="form-footer"><button type="reset" class="danger">Clear form</button></div>
+        <p class="screen-note">Your entries stay in this browser. Use “Save data” if you want to edit the application again later.</p>
+      </form>
+    </section>
+
+    <section class="panel preview-panel">
+      <h2 class="panel-title no-print">A4 preview</h2>
+      <div class="preview-wrap">
+        <article class="paper application-page">
+          <header class="document-header"><img class="document-logo" src="assets/logo.png" alt="MU ICT Student Association logo"></header>
+          <h1 class="document-title">ICT Student Club Application Form for the Academic Year<br><span data-out="academicYear">20__</span></h1>
+          <div class="application-choice">
+            <div><span class="choice-mark" data-choice="new"></span>Establish a new club</div>
+            <div><span class="choice-mark" data-choice="renew"></span>Renew an existing club</div>
+          </div>
+          <div class="metadata">
+            <p><strong>Student Club Name:</strong><span class="line-value" data-out="clubName">&nbsp;</span></p>
+            <p><strong>Advisors:</strong><span class="line-value" data-out="advisors">&nbsp;</span></p>
+          </div>
+          <h2 class="section-heading">Committee</h2>
+          <table class="document-table committee-table">
+            <thead><tr><th class="role-col"></th><th class="id-col">Student ID</th><th class="name-col">Name</th><th class="name-col">Surname</th></tr></thead>
+            <tbody id="committeePreview"></tbody>
+          </table>
+          <h2 class="section-heading">Objectives</h2>
+          <ol class="objectives" id="objectivePreview"></ol>
+          <section class="renewal-section" id="renewalPreview" hidden>
+            <h2 class="section-heading">Past Yearly Activities</h2>
+            <p><span class="document-check" data-check="annualReportSubmitted">☐</span>Submission of an Annual Report (required for the renewal of an existing club)</p>
+          </section>
+          <section class="signature-block"><div class="signatures">
+            <div class="signature"><div class="signature-line">..............................................................................</div><p class="signature-name">(<span data-out="associationPresidentName">Napatkrit Asavarojpanich</span>)</p><p>President of the ICT Student Association</p><p>……/……/………</p></div>
+            <div class="signature"><div class="signature-line">..............................................................................</div><p class="signature-name">(<span data-committee-name="0">Name-Surname</span>)</p><p>Club President</p><p>……/……/………</p></div>
+            <div class="signature"><div class="signature-line">..............................................................................</div><p class="signature-name">(<span data-out="chairpersonName">Asst. Prof. Dr. Thanapon Noraset</span>)</p><p>Chairperson of the Student Activities Supervisory Board</p><p>……/……/………</p></div>
+            <div class="signature"><div class="signature-line">..............................................................................</div><p class="signature-name">(<span data-out="clubAdvisorName">Name-Surname</span>)</p><p>Club Advisor</p><p>……/……/………</p></div>
+          </div></section>
+        </article>
+
+        <article class="paper certificate-page">
+          <h1 class="certificate-title">Certificate of Qualification<br>For Applying as a Club Executive Committee Member</h1>
+          <p class="certificate-intro">This certificate confirms that the executive committee members of the <strong><span data-out="clubName">............................................</span></strong> club — including the President, Vice President, Secretary, and Treasurer — meet all the required qualifications stated below.</p>
+          <ul class="qualification-list">
+            <li><span class="document-check" data-check="qualificationRegistered">☐</span><span>Registered as an ICT student in the academic year <span data-out="academicYear">20__</span>.</span></li>
+            <li><span class="document-check" data-check="qualificationGpa">☐</span><span>Have a GPA of not less than 2.00 in the previous semester.</span></li>
+            <li><span class="document-check" data-check="qualificationProbation">☐</span><span>Currently not on probation.</span></li>
+            <li><span class="document-check" data-check="qualificationPunishment">☐</span><span>Not being punished under Mahidol University rules.</span></li>
+            <li><span class="document-check" data-check="qualificationMembership">☐</span><span>Not a member of the Mahidol University Student Council, the Mahidol University Student Association, or the ICT Student Association.</span></li>
+          </ul>
+          <section class="certificate-signatures signature-block">
+            <div class="signature"><div class="signature-line">..............................................................................</div><p class="signature-name">(<span data-committee-name="0">Name-Surname</span>)</p><p>Club President</p></div>
+            <div class="signature"><div class="signature-line">..............................................................................</div><p class="signature-name">(<span data-committee-name="1">Name-Surname</span>)</p><p>Club Vice President</p></div>
+            <div class="signature"><div class="signature-line">..............................................................................</div><p class="signature-name">(<span data-committee-name="2">Name-Surname</span>)</p><p>Club Secretary</p></div>
+            <div class="signature"><div class="signature-line">..............................................................................</div><p class="signature-name">(<span data-committee-name="3">Name-Surname</span>)</p><p>Club Treasurer</p></div>
+          </section>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    "use strict";
+    const roles = ["President", "Vice President", "Secretary", "Treasurer"];
+    const form = document.getElementById("applicationForm");
+    const committeeFields = document.getElementById("committeeFields");
+    const committeePreview = document.getElementById("committeePreview");
+    const objectiveFields = document.getElementById("objectiveFields");
+    const objectivePreview = document.getElementById("objectivePreview");
+    let objectiveCounter = 0;
+    let suppressResetHandler = false;
+
+    function blank(value, fallback = "") { return String(value || "").trim() || fallback; }
+    function setText(element, value, fallback = "") { element.textContent = blank(value, fallback) || "\u00a0"; }
+
+    function createCommitteeFields() {
+      roles.forEach((role, index) => {
+        const card = document.createElement("div");
+        card.className = "person-card";
+        card.innerHTML = `<h3>${role}</h3><div class="grid-2"><label>Student ID<input name="committee_${index}_id" inputmode="numeric"></label><label>Name<input name="committee_${index}_name"></label><label>Surname<input name="committee_${index}_surname"></label></div>`;
+        committeeFields.appendChild(card);
+      });
+    }
+
+    function addObjective(value = "") {
+      const card = document.createElement("div");
+      card.className = "objective-card";
+      card.dataset.objectiveId = String(objectiveCounter++);
+      card.innerHTML = `<h3>Objective</h3><textarea data-objective placeholder="Describe one objective"></textarea><button type="button" class="danger remove-objective">Remove</button>`;
+      card.querySelector("[data-objective]").value = value;
+      card.querySelector(".remove-objective").addEventListener("click", () => { if (objectiveFields.children.length > 1) card.remove(); render(); });
+      objectiveFields.appendChild(card);
+    }
+
+    function readCommittee(values) {
+      return roles.map((role,index) => ({ role, studentId: values[`committee_${index}_id`] || "", name: values[`committee_${index}_name`] || "", surname: values[`committee_${index}_surname`] || "" }));
+    }
+    function readObjectives() { return [...objectiveFields.querySelectorAll("[data-objective]")].map(input => input.value); }
+    function collectData() {
+      const values = Object.fromEntries(new FormData(form).entries());
+      values.committee = readCommittee(values);
+      values.objectives = readObjectives();
+      ["annualReportSubmitted","qualificationRegistered","qualificationGpa","qualificationProbation","qualificationPunishment","qualificationMembership"].forEach(key => { values[key] = form.elements[key].checked; });
+      return values;
+    }
+
+    function render() {
+      const data = collectData();
+      document.querySelectorAll("[data-out]").forEach(element => {
+        const defaults = { academicYear:"20__", clubName:"............................................", associationPresidentName:"Napatkrit Asavarojpanich", chairpersonName:"Asst. Prof. Dr. Thanapon Noraset", clubAdvisorName:"Name-Surname" };
+        setText(element, data[element.dataset.out], defaults[element.dataset.out] || "");
+      });
+      document.querySelectorAll("[data-choice]").forEach(mark => mark.classList.toggle("checked", mark.dataset.choice === data.applicationType));
+      const renewal = data.applicationType === "renew";
+      document.getElementById("renewalField").hidden = !renewal;
+      document.getElementById("renewalPreview").hidden = !renewal;
+      document.querySelectorAll("[data-check]").forEach(mark => { mark.textContent = data[mark.dataset.check] ? "☑" : "☐"; });
+
+      committeePreview.replaceChildren();
+      data.committee.forEach(person => {
+        const row = document.createElement("tr");
+        [person.role,person.studentId,person.name,person.surname].forEach(value => { const cell=document.createElement("td"); setText(cell,value); row.appendChild(cell); });
+        committeePreview.appendChild(row);
+      });
+      document.querySelectorAll("[data-committee-name]").forEach(element => {
+        const person = data.committee[Number(element.dataset.committeeName)] || {};
+        setText(element, `${person.name || ""} ${person.surname || ""}`, "Name-Surname");
+      });
+      objectivePreview.replaceChildren();
+      data.objectives.forEach(value => { const item=document.createElement("li"); setText(item,value,"…………………………………………………………………………"); objectivePreview.appendChild(item); });
+    }
+
+    function loadData(data) {
+      suppressResetHandler = true; form.reset(); suppressResetHandler = false;
+      ["academicYear","clubName","advisors","clubAdvisorName","associationPresidentName","chairpersonName"].forEach(key => { if (data[key] !== undefined && form.elements[key]) form.elements[key].value = data[key]; });
+      if (data.applicationType) { const choice=form.querySelector(`[name="applicationType"][value="${data.applicationType}"]`); if (choice) choice.checked=true; }
+      (data.committee || []).forEach((person,index) => { if (index >= roles.length) return; form.elements[`committee_${index}_id`].value=person.studentId||""; form.elements[`committee_${index}_name`].value=person.name||""; form.elements[`committee_${index}_surname`].value=person.surname||""; });
+      ["annualReportSubmitted","qualificationRegistered","qualificationGpa","qualificationProbation","qualificationPunishment","qualificationMembership"].forEach(key => { form.elements[key].checked=Boolean(data[key]); });
+      objectiveFields.replaceChildren(); (data.objectives?.length ? data.objectives : ["", "", ""]).forEach(addObjective); render();
+    }
+
+    function loadSample() {
+      loadData({ academicYear:"2026", applicationType:"renew", clubName:"Digital Media Club", advisors:"Dr. Example Advisor", committee:[{studentId:"6688001",name:"Anan",surname:"Jaidee"},{studentId:"6688002",name:"Mali",surname:"Sukjai"},{studentId:"6688003",name:"Pim",surname:"Saelim"},{studentId:"6688004",name:"Krit",surname:"Wongdee"}], objectives:["Promote practical digital media skills.","Create opportunities for collaborative student projects.","Represent ICT students in creative activities."], annualReportSubmitted:true, clubAdvisorName:"Dr. Example Advisor", associationPresidentName:"Napatkrit Asavarojpanich", chairpersonName:"Asst. Prof. Dr. Thanapon Noraset", qualificationRegistered:true, qualificationGpa:true, qualificationProbation:true, qualificationPunishment:true, qualificationMembership:true });
+    }
+
+    function downloadData() {
+      const data=collectData(); const clubName=blank(data.clubName,"club").replace(/[^a-z0-9]+/gi,"-").replace(/^-|-$/g,"").toLowerCase();
+      const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"}); const link=document.createElement("a"); link.href=URL.createObjectURL(blob); link.download=`${clubName}-application.json`; link.click(); URL.revokeObjectURL(link.href);
+    }
+
+    createCommitteeFields(); ["","",""] .forEach(addObjective); render();
+    form.addEventListener("input",render);
+    form.addEventListener("reset",() => { if (suppressResetHandler) return; setTimeout(() => { objectiveFields.replaceChildren(); ["","",""] .forEach(addObjective); render(); },0); });
+    document.getElementById("addObjectiveButton").addEventListener("click",() => { addObjective(); render(); });
+    document.getElementById("sampleButton").addEventListener("click",loadSample);
+    document.getElementById("downloadButton").addEventListener("click",downloadData);
+    document.getElementById("printButton").addEventListener("click",() => window.print());
+    document.getElementById("uploadInput").addEventListener("change",async event => { const file=event.target.files[0]; if (!file) return; try { loadData(JSON.parse(await file.text())); } catch { alert("This is not a valid saved application file."); } event.target.value=""; });
+  </script>
+</body>
+</html>

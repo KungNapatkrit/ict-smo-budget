@@ -1,6 +1,11 @@
 # ICT SMO Club Budget Proposal
 
-This website keeps the document layout fixed while clubs enter information through a browser form.
+This website keeps official document layouts fixed while clubs enter information through browser forms.
+
+The first page lets users choose between:
+
+- Club Budget Proposal
+- Club Application Form and Qualification Certificate
 
 ## Live website
 
@@ -28,9 +33,11 @@ The logo is already included in `assets/logo.png`. To extract a replacement logo
 python3 server.py --template "template.dotx"
 ```
 
-## Current sample features
+## Current features
 
+- Form-selection home page
 - Fixed A4 proposal preview
+- Two-page club application and qualification certificate
 - Committee fields for four required roles
 - Add and remove activity rows
 - Automatic total budget
