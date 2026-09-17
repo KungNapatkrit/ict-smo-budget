@@ -29,6 +29,14 @@ const fields = [
   ["advisorDate", "Advisor signature date (optional) / วันที่ลงนาม", "date"]
 ];
 form.innerHTML = '<label>Document language / ภาษา<select name="language"><option value="en">English</option><option value="th">ไทย</option></select></label><label>Organization type / ประเภทองค์กร<select name="organizationType"><option value="club">Club / ชมรม</option><option value="association">Student Association / สโมสรนักศึกษา</option></select></label>';
+if (cancellation) {
+  const label = document.createElement("label");
+  label.className = "check-field";
+  const checkbox = document.createElement("input");
+  checkbox.type = "checkbox"; checkbox.name = "reallocateBudget"; checkbox.value = "yes";
+  label.append(checkbox, " Reallocate the unused budget / ต้องการปรับเปลี่ยนงบประมาณที่ไม่ได้ใช้");
+  form.append(label);
+}
 if (!cancellation) {
   const label = document.createElement("label");
   label.textContent = "Budget / งบประมาณ";
@@ -57,6 +65,9 @@ function render() {
   const association = d.organizationType === "association";
   for (const key of ["clubName", "advisor"]) {
     form.elements[key].closest("label").hidden = association;
+  }
+  if (cancellation) for (const key of ["sourceActivity", "sourceAmount", "targetActivity", "targetAmount", "budgetReason"]) {
+    form.elements[key].closest("label").hidden = d.reallocateBudget !== "yes";
   }
   if (!cancellation) for (const key of ["newBudget", "budgetReason"]) {
     form.elements[key].closest("label").hidden = d.budgetMode !== "changed";
@@ -89,7 +100,7 @@ function render() {
         ? "ดังนั้น " + organizationName + " จึงขอชี้แจงว่าไม่ได้ดำเนินการจัดกิจกรรม “" + text("activityName") + "” ตามกำหนดการเดิม"
         : "Therefore, the " + organizationName + " would like to inform and clarify that the activity “" + text("activityName") + "” was not conducted as originally scheduled.");
       if (!th) paragraph("The allocated budget of " + money("budget") + " Baht has not been utilized.");
-      paragraph(th
+      if (d.reallocateBudget === "yes") paragraph(th
         ? "ทั้งนี้ งบประมาณดังกล่าวจึงได้มีการปรับจากกิจกรรม “" + text("sourceActivity") + "” จำนวน " + money("sourceAmount") + " บาท ไปยังกิจกรรม “" + text("targetActivity") + "” จำนวน " + money("targetAmount") + " บาท เนื่องจาก " + text("budgetReason")
         : "The budget has therefore been reallocated from the activity “" + text("sourceActivity") + "” in the amount of " + money("sourceAmount") + " Baht to the activity “" + text("targetActivity") + "” in the amount of " + money("targetAmount") + " Baht due to " + text("budgetReason") + ".");
     } else {
@@ -101,7 +112,10 @@ function render() {
         : (th ? "ทั้งนี้ งบประมาณจำนวน " + money("budget") + " บาท ยังคงใช้ตามวัตถุประสงค์เดิมของกิจกรรม" : "The approved budget of " + money("budget") + " Baht will remain unchanged and be used in accordance with the original objectives of the activity."));
     }
     const signatures = document.createElement("section"); signatures.className = "signature-block signatures";
-    for (const [name, role] of [["president", th ? "ประธาน" + organization : organization + " President"], ["advisor", association ? "Chairperson of the Student Activities Supervisory Board" : (th ? "อาจารย์ที่ปรึกษา" + organization : organization + " Advisor")]]) {
+    const presidentRole = association
+      ? (th ? "ประธานสโมสรนักศึกษา ICT" : "President of the ICT Student Association")
+      : (th ? "ประธานชมรม" : "Club President");
+    for (const [name, role] of [["president", presidentRole], ["advisor", association ? "Chairperson of the Student Activities Supervisory Board" : (th ? "อาจารย์ที่ปรึกษา" + organization : organization + " Advisor")]]) {
       const sig = document.createElement("div"); sig.className = "signature";
       const line = document.createElement("div"); line.className = "signature-line"; sig.append(line);
       const signatureName = association && name === "advisor" ? "Asst. Prof. Dr. Thanapon Noraset" : text(name);
@@ -119,7 +133,11 @@ function loadData(data) {
   if (data.organizationType && !["club","association"].includes(data.organizationType)) throw new Error("Invalid organization type.");
   if (!cancellation && data.budgetMode && !["unchanged", "changed"].includes(data.budgetMode)) throw new Error("Invalid budget option.");
   form.reset();
-  for (const input of form.elements) if (input.name && typeof data[input.name] === "string") input.value = data[input.name];
+  for (const input of form.elements) {
+    if (!input.name) continue;
+    if (input.type === "checkbox") input.checked = data[input.name] === true || data[input.name] === input.value;
+    else if (typeof data[input.name] === "string") input.value = data[input.name];
+  }
   // Older saved forms may contain both languages; open them as English only.
   form.elements.language.value = data.language === "th" ? "th" : "en";
   render();
@@ -131,7 +149,7 @@ document.getElementById("sampleButton").addEventListener("click", () => loadData
   formType: kind, language: "en", organizationType: "club", recipient: "Student Activities Supervisory Board",
   clubName: "Digital Media", activityName: "Student Workshop", originalSchedule: "20 September 2026",
   budget: "5000", reason: "venue unavailability",
-  sourceActivity: "Student Workshop", sourceAmount: "5000", targetActivity: "Student Showcase",
+  reallocateBudget: "yes", sourceActivity: "Student Workshop", sourceAmount: "5000", targetActivity: "Student Showcase",
   targetAmount: "5000", budgetReason: "updated activity requirements",
   newSchedule: "4 October 2026", time: "13:00–16:00", venue: "ICT Building", location: "Salaya",
   budgetMode: "unchanged", newBudget: "6000", president: "Anan Jaidee", advisor: "Dr. Example Advisor"

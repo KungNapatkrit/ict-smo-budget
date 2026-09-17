@@ -133,7 +133,7 @@
           <legend>Approval names</legend>
           <div class="grid-2">
             <label>Club advisor<input name="clubAdvisorName" placeholder="Name-Surname"></label>
-            <label>ICT Student Association president<input name="associationPresidentName" value="Napatkrit Asavarojpanich"></label>
+            <label>ICT Student Association president<input name="associationPresidentName" value="Natnicha Uppariputthangkul"></label>
             <label>Board chairperson<input name="chairpersonName" value="Asst. Prof. Dr. Thanapon Noraset"></label>
           </div>
         </fieldset>
@@ -178,7 +178,7 @@
             <p><span class="document-check" data-check="annualReportSubmitted">☐</span>Submission of an Annual Report (required for the renewal of an existing club)</p>
           </section>
           <section class="signature-block"><div class="signatures">
-            <div class="signature"><div class="signature-line">..............................................................................</div><p class="signature-name">(<span data-out="associationPresidentName">Napatkrit Asavarojpanich</span>)</p><p>President of the ICT Student Association</p><p>……/……/………</p></div>
+            <div class="signature"><div class="signature-line">..............................................................................</div><p class="signature-name">(<span data-out="associationPresidentName">Natnicha Uppariputthangkul</span>)</p><p>President of the ICT Student Association</p><p>……/……/………</p></div>
             <div class="signature"><div class="signature-line">..............................................................................</div><p class="signature-name">(<span data-committee-name="0">Name-Surname</span>)</p><p>Club President</p><p>……/……/………</p></div>
             <div class="signature"><div class="signature-line">..............................................................................</div><p class="signature-name">(<span data-out="chairpersonName">Asst. Prof. Dr. Thanapon Noraset</span>)</p><p>Chairperson of the Student Activities Supervisory Board</p><p>……/……/………</p></div>
             <div class="signature"><div class="signature-line">..............................................................................</div><p class="signature-name">(<span data-out="clubAdvisorName">Name-Surname</span>)</p><p>Club Advisor</p><p>……/……/………</p></div>
@@ -187,7 +187,7 @@
 
         <article class="paper certificate-page">
           <h1 class="certificate-title">Certificate of Qualification<br>For Applying as a Club Executive Committee Member</h1>
-          <p class="certificate-intro">This certificate confirms that the executive committee members of the <strong><span data-out="clubName">............................................</span></strong> club — including the President, Vice President, Secretary, and Treasurer — meet all the required qualifications stated below.</p>
+          <p class="certificate-intro">This certificate confirms that the executive committee members of the <span data-out="clubName">............................................</span> club — including the President, Vice President, Secretary, and Treasurer — meet all the required qualifications stated below.</p>
           <ul class="qualification-list">
             <li><span class="document-check" data-check="qualificationRegistered">☐</span><span>Registered as an ICT student in the academic year <span data-out="academicYear">20__</span>.</span></li>
             <li><span class="document-check" data-check="qualificationGpa">☐</span><span>Have a GPA of not less than 2.00 in the previous semester.</span></li>
@@ -254,7 +254,7 @@
     function render() {
       const data = collectData();
       document.querySelectorAll("[data-out]").forEach(element => {
-        const defaults = { academicYear:"20__", clubName:"............................................", associationPresidentName:"Napatkrit Asavarojpanich", chairpersonName:"Asst. Prof. Dr. Thanapon Noraset", clubAdvisorName:"Name-Surname" };
+        const defaults = { academicYear:"20__", clubName:"............................................", associationPresidentName:"Natnicha Uppariputthangkul", chairpersonName:"Asst. Prof. Dr. Thanapon Noraset", clubAdvisorName:"Name-Surname" };
         setText(element, data[element.dataset.out], defaults[element.dataset.out] || "");
       });
       document.querySelectorAll("[data-choice]").forEach(mark => mark.classList.toggle("checked", mark.dataset.choice === data.applicationType));
@@ -287,7 +287,7 @@
     }
 
     function loadSample() {
-      loadData({ academicYear:"2026", applicationType:"renew", clubName:"Digital Media Club", advisors:"Dr. Example Advisor", committee:[{studentId:"6688001",name:"Anan",surname:"Jaidee"},{studentId:"6688002",name:"Mali",surname:"Sukjai"},{studentId:"6688003",name:"Pim",surname:"Saelim"},{studentId:"6688004",name:"Krit",surname:"Wongdee"}], objectives:["Promote practical digital media skills.","Create opportunities for collaborative student projects.","Represent ICT students in creative activities."], annualReportSubmitted:true, clubAdvisorName:"Dr. Example Advisor", associationPresidentName:"Napatkrit Asavarojpanich", chairpersonName:"Asst. Prof. Dr. Thanapon Noraset", qualificationRegistered:true, qualificationGpa:true, qualificationProbation:true, qualificationPunishment:true, qualificationMembership:true });
+      loadData({ academicYear:"2026", applicationType:"renew", clubName:"Digital Media Club", advisors:"Dr. Example Advisor", committee:[{studentId:"6688001",name:"Anan",surname:"Jaidee"},{studentId:"6688002",name:"Mali",surname:"Sukjai"},{studentId:"6688003",name:"Pim",surname:"Saelim"},{studentId:"6688004",name:"Krit",surname:"Wongdee"}], objectives:["Promote practical digital media skills.","Create opportunities for collaborative student projects.","Represent ICT students in creative activities."], annualReportSubmitted:true, clubAdvisorName:"Dr. Example Advisor", associationPresidentName:"Natnicha Uppariputthangkul", chairpersonName:"Asst. Prof. Dr. Thanapon Noraset", qualificationRegistered:true, qualificationGpa:true, qualificationProbation:true, qualificationPunishment:true, qualificationMembership:true });
     }
 
     function downloadData() {
