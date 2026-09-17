@@ -6,6 +6,8 @@ The first page lets users choose between:
 
 - Club Budget Proposal
 - Club Application Form and Qualification Certificate
+- Activity Cancellation and Budget Reallocation (English, Thai, or both)
+- Club Postponement with optional budget changes (English, Thai, or both)
 
 ## Live website
 
